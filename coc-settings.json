@@ -1,0 +1,5 @@
+{
+    "yank.highlight.enable": true,
+    "yank.highlight.duration": 400,
+    "yank.enableCompletion": true
+}
