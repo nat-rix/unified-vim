@@ -1,5 +1,16 @@
 {
     "yank.highlight.enable": true,
     "yank.highlight.duration": 400,
-    "yank.enableCompletion": true
+    "yank.enableCompletion": true,
+    
+    "rust.clippy_preference": "on",
+    "python.formatting.provider": "yapf",
+
+    "coc.preferences.formatOnSaveFiletypes": [
+        "rust",
+        "python",
+        "html",
+        "js",
+        "css"
+    ]
 }
