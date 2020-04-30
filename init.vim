@@ -2,13 +2,10 @@
 " ============
 
 "  * nvim
-"  * ctags
 "  * vim-plug
 "  	install it by moving `https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim`
 "  	to `$HOME/.local/share/nvim/site/autoload/plug.vim`
 "  	and then execute `:PlugInstall`
-"  * coc-yank
-"       after executing `:PlugInstall`, do `:CocInstall coc-yank
 
 
 " Basic Configuration
@@ -28,8 +25,17 @@ set autoindent
 " Backspacing in insert mode behaves as one would expect
 set backspace=indent,eol,start
 
-" On <Tab> insert blanks according to 'shiftwidth'
+" On <TAB> insert blanks according to 'shiftwidth'
 set smarttab
+
+" Number of spaces that a <Tab> in the file counts for
+set tabstop=4
+
+" Insert spaces instead of tabs
+set expandtab
+
+" Size of an indentation in spaces
+set shiftwidth=4
 
 " Supports Ctrl+a and Ctrl+x for following number formats
 set nrformats=bin,hex,octal
@@ -84,6 +90,71 @@ set tm=500
 set wildignore=*.o,*~,*.pyc
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,*/target/*
 
+" Only be case sensitive on search if contains upper case letters
+set smartcase
+
+
+" Standard Status Line
+" ====================
+
+" Define colors for status line
+" For a definition of cterm colors s. https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+let s:unitheme='theonlyyetdefinedtheme'
+if s:unitheme == 'theonlyyetdefinedtheme'
+    hi UniStatusBg                             ctermbg=252 ctermfg=0
+    hi UniStatusModestr       cterm=bold       ctermbg=252 ctermfg=0
+    hi UniStatusFile          cterm=italic     ctermbg=252 ctermfg=16
+    hi UniStatusEnc                            ctermbg=252 ctermfg=239
+endif
+
+" Function generating text for current mode
+function! UnifiedGetMode() abort
+    return {
+        \ 'n': 'NORMAL',
+        \ 'v': 'VISUAL',
+        \ 'V': 'V LINE',
+        \ '':  'V BLOCK',
+        \ 'i': 'INSERT',
+        \ 'R': 'REPLACE',
+        \ 'Rv': 'V-REPLACE',
+        \ 'c': 'CMD',
+        \}[mode()]
+endfunction
+
+" Function generating file flags
+function! UnifiedGenModsl() abort
+    let l:val = ''
+    if &modified
+        let l:val .= '*'
+    endif
+    if &readonly
+        let l:val .= ' readonly'
+    endif
+    return l:val
+endfunction
+
+" Function generating status line
+function! UnifiedGensl() abort
+	let l:coc_status = coc#status() . get(b:,'coc_current_function','')
+	if empty(l:coc_status)
+	else
+		let l:coc_status = '%#CocListFgMagenta#( ' . l:coc_status . ' )%#UniStatusBg#'
+	endif
+	let l:modestr = '%#UniStatusModestr# %{UnifiedGetMode()}%#UniStatusBg#'
+    let l:filepath = ' │ %#UniStatusFile#%t%#UniStatusBg#'
+    let l:filepath .= '%{UnifiedGenModsl()}'
+    let l:linecol = '%#ModeMsg#| c%c L%l/%L%#UniStatusBg#'
+    let l:fileenc = '%#UniStatusEnc#%{&fileencoding}%#UniStatusBg#'
+	let l:left = l:modestr . l:filepath
+	let l:right = l:fileenc . '  ' . l:linecol . l:coc_status
+	let l:ret = l:left . '%#UniStatusBg#%=' . l:right
+	return l:ret
+endfunction
+
+" Set status line generator
+set statusline=%!UnifiedGensl()
+
+
 " Fuzzy finding
 " =============
 
@@ -93,7 +164,7 @@ set path+=**
 
 " Enable tab-completion for fuzzy-find
 set wildmenu
-set wildchar=<Tab>
+set wildchar=<TAB>
 
 
 " Autocompletion
@@ -155,6 +226,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
+let g:coc_global_extensions=['coc-yank', 'coc-rust-analyzer', 'coc-python',	'coc-java', 'coc-html', 'coc-json', 'coc-omnisharp', 'coc-xml', 'coc-yaml', 'coc-tsserver', 'coc-markdownlint']
+
 " Plugins
 " =======
 
@@ -163,8 +236,8 @@ call plug#end()
 " > see coc-settings.json
 hi HighlightedyankRegion term=bold ctermbg=4 guibg=#13354A
 
-" Mouse focus
-" ===========
+" Mouse
+" =====
 
 " Enable mouse navigation for all modes except for prompts
 set mouse=a
@@ -204,6 +277,10 @@ noremap V <C-R>
 noremap j n
 noremap J N
 
+" Visual mode
+noremap b v
+noremap B V
+
 " File control
 " TODO: some other vim buffer shit
 
@@ -215,6 +292,37 @@ inoremap <C-r> <ESC>:bn<CR>
 
 " Movement between windows
 noremap <C-UP> <C-W><UP>
-noremap <C-DOWN> <C-W><UP>
-nnoremap <C-UP> <C-W><UP>
-nnoremap <C-UP> <C-W><UP>
+noremap <C-DOWN> <C-W><DOWN>
+noremap <C-LEFT> <C-W><LEFT>
+noremap <C-RIGHT> <C-W><RIGHT>
+inoremap <C-UP> <ESC><C-W><UP>
+inoremap <C-DOWN> <ESC><C-W><DOWN>
+inoremap <C-LEFT> <ESC><C-W><LEFT>
+inoremap <C-RIGHT> <ESC><C-W><RIGHT>
+
+" Autocomplete
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <TAB> for selections ranges.
+" NOTE: Requires 'textDocument/selectionRange' support from the language server.
+" coc-tsserver, coc-python are the examples of servers that support it.
+nmap <silent> <TAB> <Plug>(coc-range-select)
+xmap <silent> <TAB> <Plug>(coc-range-select)
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <TAB>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Use <CR> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+" <CR> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
