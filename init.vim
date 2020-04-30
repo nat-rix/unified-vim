@@ -3,9 +3,9 @@
 
 "  * nvim
 "  * vim-plug
-"  	install it by moving `https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim`
-"  	to `$HOME/.local/share/nvim/site/autoload/plug.vim`
-"  	and then execute `:PlugInstall`
+"   install it by moving `https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim`
+"   to `$HOME/.local/share/nvim/site/autoload/plug.vim`
+"   and then execute `:PlugInstall`
 
 
 " Basic Configuration
@@ -135,20 +135,20 @@ endfunction
 
 " Function generating status line
 function! UnifiedGensl() abort
-	let l:coc_status = coc#status() . get(b:,'coc_current_function','')
-	if empty(l:coc_status)
-	else
-		let l:coc_status = '%#CocListFgMagenta#( ' . l:coc_status . ' )%#UniStatusBg#'
-	endif
-	let l:modestr = '%#UniStatusModestr# %{UnifiedGetMode()}%#UniStatusBg#'
+    let l:coc_status = coc#status() . get(b:,'coc_current_function','')
+    if empty(l:coc_status)
+    else
+        let l:coc_status = '%#CocListFgMagenta#( ' . l:coc_status . ' )%#UniStatusBg#'
+    endif
+    let l:modestr = '%#UniStatusModestr# %{UnifiedGetMode()}%#UniStatusBg#'
     let l:filepath = ' │ %#UniStatusFile#%t%#UniStatusBg#'
     let l:filepath .= '%{UnifiedGenModsl()}'
     let l:linecol = '%#ModeMsg#| c%c L%l/%L%#UniStatusBg#'
     let l:fileenc = '%#UniStatusEnc#%{&fileencoding}%#UniStatusBg#'
-	let l:left = l:modestr . l:filepath
-	let l:right = l:fileenc . '  ' . l:linecol . l:coc_status
-	let l:ret = l:left . '%#UniStatusBg#%=' . l:right
-	return l:ret
+    let l:left = l:modestr . l:filepath
+    let l:right = l:fileenc . '  ' . l:linecol . l:coc_status
+    let l:ret = l:left . '%#UniStatusBg#%=' . l:right
+    return l:ret
 endfunction
 
 " Set status line generator
@@ -226,7 +226,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
-let g:coc_global_extensions=['coc-yank', 'coc-rust-analyzer', 'coc-python',	'coc-java', 'coc-html', 'coc-json', 'coc-omnisharp', 'coc-xml', 'coc-yaml', 'coc-tsserver', 'coc-markdownlint']
+let g:coc_global_extensions=['coc-yank', 'coc-rust-analyzer', 'coc-python', 'coc-java', 'coc-html', 'coc-json', 'coc-omnisharp', 'coc-xml', 'coc-yaml', 'coc-tsserver', 'coc-markdownlint']
 
 " Plugins
 " =======
