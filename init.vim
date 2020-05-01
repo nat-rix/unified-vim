@@ -93,6 +93,18 @@ set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,*/target/*
 " Only be case sensitive on search if contains upper case letters
 set smartcase
 
+" Enable relative number display at left-most column
+set relativenumber
+
+" But show absolute line number at the cursor line
+set number
+
+" Set the width of the number column to 3
+set numberwidth=3
+
+" Allow `//`-Comments for json files (see jsonc-format)
+autocmd FileType json syntax match Comment +\/\/.\+$+
+
 
 " Standard Status Line
 " ====================

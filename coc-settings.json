@@ -3,7 +3,8 @@
     "yank.highlight.duration": 400,
     "yank.enableCompletion": true,
     
-    "rust.clippy_preference": "on",
+    // rust.clippy_preference does only exist for rust-rls
+    // "rust.clippy_preference": "on",
     "python.formatting.provider": "yapf",
 
     "coc.preferences.formatOnSaveFiletypes": [
@@ -12,5 +13,7 @@
         "html",
         "js",
         "css"
-    ]
+    ],
+
+    "java.home": "/usr/lib/jvm/default"
 }
