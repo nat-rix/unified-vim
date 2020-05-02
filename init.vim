@@ -309,12 +309,14 @@ set mousemodel=popup_setpos
 " For a definition of cterm colors s. https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
 let s:unitheme='theonlyyetdefinedtheme'
 if s:unitheme == 'theonlyyetdefinedtheme'
+    colorscheme gruvbox
+    let g:gruvbox_contrast_dark = 'hard'
+    let g:gruvbox_contrast_light = 'hard'
     hi UniStatusBg                             ctermbg=252 ctermfg=0
     hi UniStatusModestr       cterm=bold       ctermbg=252 ctermfg=0
     hi UniStatusFile          cterm=italic     ctermbg=252 ctermfg=16
     hi UniStatusEnc                            ctermbg=252 ctermfg=239
-    " hi Normal                                  ctermbg=234
-    " hi Normal                                  ctermbg=none
+    hi Normal                                  ctermbg=none
 endif
 
 " Function generating text for current mode
