@@ -71,7 +71,7 @@ set hidden
 set lazyredraw
 
 " For regular expressions turn magic on, this is necessary for most plugins
-" and standard vim behaviour
+" and standard Vim behaviour
 set magic
 
 " Show matching brackets when text indicator is over them
@@ -138,15 +138,15 @@ endif
 noremap <Leader>m mmHmt:%s/<C-V><CR>//ge<CR>'tzt'm
 
 " Quickly open a markdown buffer for scribble
-map <silent> ß :noswapfile enew<CR>:setlocal buftype=nofile<CR>:setlocal bufhidden=hide<CR>file scratch<CR>
+noremap <silent> ß :noswapfile enew<CR>:setlocal buftype=nofile<CR>:setlocal bufhidden=hide<CR>file scratch<CR>
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
+imap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+imap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
     let col = col('.') - 1
@@ -154,10 +154,12 @@ function! s:check_back_space() abort
 endfunction
 
 " Use <C-space> to trigger completion.
-inoremap <silent><expr> <C-space> coc#refresh()
+nmap <silent><expr> <C-space> coc#refresh()
+imap <silent><expr> <C-space> coc#refresh()
 
 " Remap for rename current word
 nmap <F2> <Plug>(coc-rename)
+imap <F2> <Esc><Plug>(coc-rename)
 
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
@@ -174,7 +176,7 @@ function! s:show_documentation()
     endif
 endfunction
 
-" Persisten undo
+" Persisted undo
 try
     set undodir=~/.vim_runtime/temp_dirs/undodir
     set undofile
@@ -281,7 +283,7 @@ let g:coc_global_extensions=[
 " coc-yank
 " --------
 " > see coc-settings.json
-hi HighlightedyankRegion term=bold ctermbg=4 guibg=#13354A
+hi HighlightedyankRegion term=bold ctermbg=4
 
 " bufexplorer
 " -----------
@@ -369,11 +371,12 @@ endfunction
 set statusline=%!UnifiedGensl()
 
 
-" Keybindings
-" ===========
+" Key bindings
+" ============
 
 " Simple single character movement up and down.
 " For left and right cursor movement better use neo's LIAE-direction-keys
+noremap s h
 noremap n j
 noremap r k
 noremap t l
@@ -389,6 +392,9 @@ noremap E E
 noremap l r
 noremap L R
 
+" Delete and go in insert mode
+noremap h s
+
 " Insert mode
 " appending still is at "a"
 noremap u i
@@ -396,11 +402,17 @@ noremap U I
 
 " Undo
 noremap v u
-noremap V <C-R>
+noremap V <C-r>
 
 " Search
 noremap j n
 noremap J N
+
+" Jump back and forward in jump list
+noremap ä <C-i>
+noremap Ä <C-o>
+
+" TODO: ö and ü are not taken yet, come up with an assignment
 
 " Visual mode
 noremap b v
@@ -416,7 +428,7 @@ function! ToggleSpellChecking()
 endfunction
 
 " Don't do spell checking
-" set nospell
+set nospell
 
 " Spelling language english
 set spelllang=en_us
