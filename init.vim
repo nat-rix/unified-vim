@@ -132,7 +132,7 @@ fun! CleanExtraSpaces()
 endfun
 if has("autocmd")
     autocmd BufWritePre *.rs,*.txt,*.js,*.ts,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
-endif 
+endif
 
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><CR>//ge<CR>'tzt'm
@@ -140,11 +140,11 @@ noremap <Leader>m mmHmt:%s/<C-V><CR>//ge<CR>'tzt'm
 " Quickly open a markdown buffer for scribble
 map <silent> ß :noswapfile enew<CR>:setlocal buftype=nofile<CR>:setlocal bufhidden=hide<CR>file scratch<CR>
 
-" Use tab for trigger completion with characters ahead and navigate.                 
+" Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :                                         
+      \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
@@ -164,7 +164,7 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Use K to show documentation in preview window                  
+" Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation()
     if (index(['vim','help'], &filetype) >= 0)
@@ -172,7 +172,7 @@ function! s:show_documentation()
     else
         call CocAction('doHover')
     endif
-endfunction                                                      
+endfunction
 
 " Persisten undo
 try
@@ -254,6 +254,8 @@ Plug 'cespare/vim-toml'
 
 Plug 'chr4/nginx.vim'
 
+Plug 'ntpeters/vim-better-whitespace'
+
 " TODO: Consider some plugins by tpope
 
 call plug#end()
@@ -287,7 +289,7 @@ hi HighlightedyankRegion term=bold ctermbg=4 guibg=#13354A
 let g:bufExplorerDefaultHelp=0
 let g:bufExplorerShowRelativePath=1
 let g:bufExplorerFindActive=1
-let g:bufExplorerSortBy='mru'      
+let g:bufExplorerSortBy='mru'
 nnoremap <leader>o :BufExplorer<cr>
 
 " Mouse
@@ -469,8 +471,8 @@ endfunction
 " Quick-Fix key
 noremap <leader>f  <Plug>(coc-fix-current)
 
-" Use `:Format` to format current buffer            
-command! -nargs=0 Format :call CocAction('format')  
+" Use `:Format` to format current buffer
+command! -nargs=0 Format :call CocAction('format')
 
 " File control
 " TODO: some other vim buffer shit
@@ -503,19 +505,19 @@ inoremap <C-RIGHT> <ESC><C-W><RIGHT>
 " ====================================================
 
 " Don't close window, when deleting a buffer
-command! Bclose call <SID>BufcloseCloseIt()         
+command! Bclose call <SID>BufcloseCloseIt()
 function! <SID>BufcloseCloseIt()
-    let l:currentBufNum = bufnr("%")                
-    let l:alternateBufNum = bufnr("#")                                                                  
+    let l:currentBufNum = bufnr("%")
+    let l:alternateBufNum = bufnr("#")
     if buflisted(l:alternateBufNum)
-        buffer #                                    
+        buffer #
     else
-        bnext                                       
+        bnext
 endif
-    if bufnr("%") == l:currentBufNum                
+    if bufnr("%") == l:currentBufNum
         new
-    endif                                           
-    if buflisted(l:currentBufNum)                   
+    endif
+    if buflisted(l:currentBufNum)
         execute("bdelete! ".l:currentBufNum)
     endif
-endfunction                                         
+endfunction
