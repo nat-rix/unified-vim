@@ -462,6 +462,10 @@ function! VisualSelection() range
     let @" = l:saved_reg
 endfunction
 
+function! CmdLine(str)
+    call feedkeys(":" . a:str)
+endfunction
+
 " Quick-Fix key
 noremap <leader>f  <Plug>(coc-fix-current)
 
