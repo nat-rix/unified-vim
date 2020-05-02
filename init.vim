@@ -174,6 +174,13 @@ function! s:show_documentation()
     endif
 endfunction                                                      
 
+" Persisten undo
+try
+    set undodir=~/.vim_runtime/temp_dirs/undodir
+    set undofile
+catch
+endtry
+
 " Fuzzy finding
 " =============
 
