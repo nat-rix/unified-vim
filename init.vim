@@ -15,6 +15,9 @@
 " Enable more modern features that might be confusing for vi users
 set nocompatible
 
+" Set the leader key
+let mapleader = ','
+
 " Enable syntax and plugins (for netrw)
 syntax enable
 filetype plugin on
@@ -87,8 +90,7 @@ set t_vb=
 set tm=500
 
 " Ignore compiled files
-set wildignore=*.o,*~,*.pyc
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,*/target/*
+set wildignore=*.o,*~,*.pyc,*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,*/target/*
 
 " Only be case sensitive on search if contains upper case letters
 set smartcase
@@ -105,67 +107,72 @@ set numberwidth=3
 " Allow `//`-Comments for json files (see jsonc-format)
 autocmd FileType json syntax match Comment +\/\/.\+$+
 
+" Soft-wrap line if too long
+set wrap
 
-" Standard Status Line
-" ====================
+" Let Cargo.lock files have less autocomplete priority than Cargo.toml
+set suffixes+=.lock
 
-" Define colors for status line
-" For a definition of cterm colors s. https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
-let s:unitheme='theonlyyetdefinedtheme'
-if s:unitheme == 'theonlyyetdefinedtheme'
-    hi UniStatusBg                             ctermbg=252 ctermfg=0
-    hi UniStatusModestr       cterm=bold       ctermbg=252 ctermfg=0
-    hi UniStatusFile          cterm=italic     ctermbg=252 ctermfg=16
-    hi UniStatusEnc                            ctermbg=252 ctermfg=239
-endif
+" Only show tab line if there are minimum 2 of them
+set showtabline=1
 
-" Function generating text for current mode
-function! UnifiedGetMode() abort
-    return {
-        \ 'n': 'NORMAL',
-        \ 'v': 'VISUAL',
-        \ 'V': 'V LINE',
-        \ '':  'V BLOCK',
-        \ 'i': 'INSERT',
-        \ 'R': 'REPLACE',
-        \ 'Rv': 'V-REPLACE',
-        \ 'c': 'CMD',
-        \}[mode()]
+" Remember the cursor position in shada-file and restore it
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" Make Cmdline auto-complete great again
+set wildmode=longest,list
+
+" Delete trailing white space on save, useful for some filetypes
+fun! CleanExtraSpaces()
+    let save_cursor = getpos(".")
+    let old_query = getreg('/')
+    silent! %s/\s\+$//e
+    call setpos('.', save_cursor)
+    call setreg('/', old_query)
+endfun
+if has("autocmd")
+    autocmd BufWritePre *.rs,*.txt,*.js,*.ts,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+endif 
+
+" Remove the Windows ^M - when the encodings gets messed up
+noremap <Leader>m mmHmt:%s/<C-V><CR>//ge<CR>'tzt'm
+
+" Quickly open a markdown buffer for scribble
+map <silent> ß :noswapfile enew<CR>:setlocal buftype=nofile<CR>:setlocal bufhidden=hide<CR>file scratch<CR>
+
+" Use tab for trigger completion with characters ahead and navigate.                 
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :                                         
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" Function generating file flags
-function! UnifiedGenModsl() abort
-    let l:val = ''
-    if &modified
-        let l:val .= '*'
-    endif
-    if &readonly
-        let l:val .= ' readonly'
-    endif
-    return l:val
-endfunction
+" Use <C-space> to trigger completion.
+inoremap <silent><expr> <C-space> coc#refresh()
 
-" Function generating status line
-function! UnifiedGensl() abort
-    let l:coc_status = coc#status() . get(b:,'coc_current_function','')
-    if empty(l:coc_status)
+" Remap for rename current word
+nmap <F2> <Plug>(coc-rename)
+
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window                  
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+    if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
     else
-        let l:coc_status = '%#CocListFgMagenta#( ' . l:coc_status . ' )%#UniStatusBg#'
+        call CocAction('doHover')
     endif
-    let l:modestr = '%#UniStatusModestr# %{UnifiedGetMode()}%#UniStatusBg#'
-    let l:filepath = ' │ %#UniStatusFile#%t%#UniStatusBg#'
-    let l:filepath .= '%{UnifiedGenModsl()}'
-    let l:linecol = '%#ModeMsg#| c%c L%l/%L%#UniStatusBg#'
-    let l:fileenc = '%#UniStatusEnc#%{&fileencoding}%#UniStatusBg#'
-    let l:left = l:modestr . l:filepath
-    let l:right = l:fileenc . '  ' . l:linecol . l:coc_status
-    let l:ret = l:left . '%#UniStatusBg#%=' . l:right
-    return l:ret
-endfunction
-
-" Set status line generator
-set statusline=%!UnifiedGensl()
-
+endfunction                                                      
 
 " Fuzzy finding
 " =============
@@ -230,23 +237,47 @@ inoremap <C-v> <ESC>"+pa
 
 call plug#begin('$HOME/.vim/plugged')
 
+Plug 'flazz/vim-colorschemes'
+
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+Plug 'truedoctor/bufexplorer'
+
 " TODO: Consider some plugins by tpope
-" TODO: NerdTree?
-" TODO: status line plugins?
 
 call plug#end()
 
-let g:coc_global_extensions=['coc-yank', 'coc-rust-analyzer', 'coc-python', 'coc-java', 'coc-html', 'coc-json', 'coc-omnisharp', 'coc-xml', 'coc-yaml', 'coc-tsserver', 'coc-markdownlint']
+let g:coc_global_extensions=[
+    \'coc-yank',
+    \'coc-rust-analyzer',
+    \'coc-python',
+    \'coc-java',
+    \'coc-html',
+    \'coc-json',
+    \'coc-omnisharp',
+    \'coc-xml',
+    \'coc-yaml',
+    \'coc-tsserver',
+    \'coc-markdownlint',
+\]
 
-" Plugins
-" =======
+
+" Plugin Configuration
+" ====================
 
 " coc-yank
 " --------
 " > see coc-settings.json
 hi HighlightedyankRegion term=bold ctermbg=4 guibg=#13354A
+
+" bufexplorer
+" -----------
+
+let g:bufExplorerDefaultHelp=0
+let g:bufExplorerShowRelativePath=1
+let g:bufExplorerFindActive=1
+let g:bufExplorerSortBy='mru'      
+nnoremap <leader>o :BufExplorer<cr>
 
 " Mouse
 " =====
@@ -257,6 +288,72 @@ set mouse=a
 " When typing hide mouse (only works in gui)
 set mousehide=on
 
+set mousemodel=popup_setpos
+
+
+" Standard Status Line
+" ====================
+
+" Define colors for status line
+" For a definition of cterm colors s. https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+let s:unitheme='theonlyyetdefinedtheme'
+if s:unitheme == 'theonlyyetdefinedtheme'
+    hi UniStatusBg                             ctermbg=252 ctermfg=0
+    hi UniStatusModestr       cterm=bold       ctermbg=252 ctermfg=0
+    hi UniStatusFile          cterm=italic     ctermbg=252 ctermfg=16
+    hi UniStatusEnc                            ctermbg=252 ctermfg=239
+    " hi Normal                                  ctermbg=234
+    " hi Normal                                  ctermbg=none
+endif
+
+" Function generating text for current mode
+function! UnifiedGetMode() abort
+    return {
+        \ 'n': 'NORMAL',
+        \ 'v': 'VISUAL',
+        \ 'V': 'V LINE',
+        \ '':  'V BLOCK',
+        \ 'i': 'INSERT',
+        \ 'R': 'REPLACE',
+        \ 'Rv': 'V-REPLACE',
+        \ 'c': 'CMD',
+        \}[mode()]
+endfunction
+
+" Function generating file flags
+function! UnifiedGenModsl() abort
+    let l:val = ''
+    if &modified
+        let l:val .= '*'
+    endif
+    if &readonly
+        let l:val .= ' readonly'
+    endif
+    return l:val
+endfunction
+
+" Function generating status line
+function! UnifiedGensl() abort
+    let l:coc_status = coc#status() . get(b:,'coc_current_function','')
+    if empty(l:coc_status)
+    else
+        let l:coc_status = '%#CocListFgMagenta#( ' . l:coc_status . ' )%#UniStatusBg#'
+    endif
+    let l:modestr = '%#UniStatusModestr# %{UnifiedGetMode()}%#UniStatusBg#'
+    let l:filepath = ' │ %#UniStatusFile#%t%#UniStatusBg#'
+    let l:filepath .= '%{UnifiedGenModsl()}'
+    let l:linecol = '%#ModeMsg#| c%c L%l/%L%#UniStatusBg#'
+    let l:fileenc = '%#UniStatusEnc#%{&fileencoding}%#UniStatusBg#'
+    let l:left = l:modestr . l:filepath
+    let l:right = l:fileenc . '  ' . l:linecol . l:coc_status
+    let l:ret = l:left . '%#UniStatusBg#%=' . l:right
+    return l:ret
+endfunction
+
+" Set status line generator
+set statusline=%!UnifiedGensl()
+
+
 " Keybindings
 " ===========
 
@@ -264,6 +361,7 @@ set mousehide=on
 " For left and right cursor movement better use neo's LIAE-direction-keys
 noremap n j
 noremap r k
+noremap t l
 
 " Word movement
 " Intuitive, because similar to neo's LIAE-keys
@@ -293,16 +391,88 @@ noremap J N
 noremap b v
 noremap B V
 
+function! ToggleSpellChecking()
+    let &spell=!&spell
+    if &spell
+        echomsg "Spell checking on, PageUp and PageDown to cycle, \",sa\" add, \",s?\" suggest"
+    else
+        echomsg "Spell checking off"
+    endif
+endfunction
+
+" Don't do spell checking
+" set nospell
+
+" Spelling language english
+set spelllang=en_us
+
+set spellsuggest=best,20
+
+" Toggle spell checking
+noremap <silent> <Leader>ss :call ToggleSpellChecking()<CR>
+
+" Add do dictionary
+noremap <Leader>sa zg
+
+" List all suggested spell checkings
+noremap <Leader>s? z=
+
+" Set spelling language to german
+noremap <Leader>sd :set spelllang=de_20<CR>
+
+" Set spelling language to english
+noremap <Leader>se :set spelllang=en_us<CR>
+
+" Cycle through spell checker issues
+noremap <PageUp> [s
+noremap <PageDown> ]s
+
+" Jump to the first relevant character instead
+noremap 0 ^
+
+" Move line up/down with Alt+n/r
+noremap <M-n> mz:m+<cr>`z
+noremap <M-r> mz:m-2<cr>`z
+inoremap <M-n> <ESC>mz:m+<cr>`za
+inoremap <M-r> <ESC>mz:m-2<cr>`za
+
+" When you press L you can search and replace the selected text
+vnoremap <silent> L :call VisualSelection()<CR>
+
+function! VisualSelection() range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+    let l:pattern = escape(@", "\\/.*'$^~[]")
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+    call CmdLine("%s" . '/'. l:pattern . '/')
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
+
+" Quick-Fix key
+noremap <leader>f  <Plug>(coc-fix-current)
+
+" Use `:Format` to format current buffer            
+command! -nargs=0 Format :call CocAction('format')  
+
 " File control
 " TODO: some other vim buffer shit
 
 " Cycle through buffers
-noremap <C-n> :bp<CR>
-noremap <C-r> :bn<CR>
-inoremap <C-n> <ESC>:bp<CR>
-inoremap <C-r> <ESC>:bn<CR>
+noremap <M-S-n> :bp<CR>
+noremap <M-S-r> :bn<CR>
+inoremap <M-S-n> <ESC>:bp<CR>
+inoremap <M-S-r> <ESC>:bn<CR>
 
 " Movement between windows
+noremap <C-r> <C-W><UP>
+noremap <C-n> <C-W><DOWN>
+noremap <C-s> <C-W><LEFT>
+noremap <C-t> <C-W><RIGHT>
+inoremap <C-r> <ESC><C-W><UP>
+inoremap <C-n> <ESC><C-W><DOWN>
+inoremap <C-s> <ESC><C-W><LEFT>
+inoremap <C-t> <ESC><C-W><RIGHT>
 noremap <C-UP> <C-W><UP>
 noremap <C-DOWN> <C-W><DOWN>
 noremap <C-LEFT> <C-W><LEFT>
@@ -312,29 +482,23 @@ inoremap <C-DOWN> <ESC><C-W><DOWN>
 inoremap <C-LEFT> <ESC><C-W><LEFT>
 inoremap <C-RIGHT> <ESC><C-W><RIGHT>
 
-" Autocomplete
+" Strange functions that better nobody should ever see
+" ====================================================
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <TAB> for selections ranges.
-" NOTE: Requires 'textDocument/selectionRange' support from the language server.
-" coc-tsserver, coc-python are the examples of servers that support it.
-nmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <TAB> <Plug>(coc-range-select)
-
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <TAB>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-" Use <CR> to confirm completion, `<C-g>u` means break undo chain at current
-" position. Coc only does snippet and additional edit on confirm.
-" <CR> could be remapped by other vim plugin, try `:verbose imap <CR>`.
-inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+" Don't close window, when deleting a buffer
+command! Bclose call <SID>BufcloseCloseIt()         
+function! <SID>BufcloseCloseIt()
+    let l:currentBufNum = bufnr("%")                
+    let l:alternateBufNum = bufnr("#")                                                                  
+    if buflisted(l:alternateBufNum)
+        buffer #                                    
+    else
+        bnext                                       
+endif
+    if bufnr("%") == l:currentBufNum                
+        new
+    endif                                           
+    if buflisted(l:currentBufNum)                   
+        execute("bdelete! ".l:currentBufNum)
+    endif
+endfunction                                         

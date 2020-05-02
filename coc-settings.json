@@ -5,6 +5,8 @@
     
     // rust.clippy_preference does only exist for rust-rls
     // "rust.clippy_preference": "on",
+    "rust-analyzer.procMacro.enable": true,
+
     "python.formatting.provider": "yapf",
 
     "coc.preferences.formatOnSaveFiletypes": [
