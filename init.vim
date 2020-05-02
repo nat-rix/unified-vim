@@ -243,6 +243,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'truedoctor/bufexplorer'
 
+Plug 'cespare/vim-toml'
+
+Plug 'chr4/nginx.vim'
+
 " TODO: Consider some plugins by tpope
 
 call plug#end()
