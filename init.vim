@@ -326,14 +326,25 @@ endif
 " Function generating text for current mode
 function! UnifiedGetMode() abort
     return {
-        \ 'n': 'NORMAL',
-        \ 'v': 'VISUAL',
-        \ 'V': 'V LINE',
-        \ '':  'V BLOCK',
-        \ 'i': 'INSERT',
-        \ 'R': 'REPLACE',
-        \ 'Rv': 'V-REPLACE',
-        \ 'c': 'CMD',
+        \ 'n'      : 'NORMAL',
+        \ 'v'      : 'VISUAL',
+        \ 'V'      : 'V LINE',
+        \ '\<C-V>' :  'V BLOCK',
+        \ 'i'      : 'INSERT',
+        \ 'R'      : 'REPLACE',
+        \ 'Rv'     : 'V-REPLACE',
+        \ 'c'      : 'CMD',
+        \ 'no'     : 'N·Operator Pending',
+        \ 's'      : 'SELECT',
+        \ 'S'      : 'S·LINE ',
+        \ '\<C-S>' : 'S·BLOK ',
+        \ 'cv'     : 'Vim Ex ',
+        \ 'ce'     : 'Ex ',
+        \ 'r'      : 'Prompt ',
+        \ 'rm'     : 'More ',
+        \ 'r?'     : 'Confirm ',
+        \ '!'      : 'Shell ',
+        \ 't'      : 'Terminal '
         \}[mode()]
 endfunction
 
