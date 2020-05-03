@@ -119,6 +119,9 @@ set showtabline=1
 " Remember the cursor position in shada-file and restore it
 autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+" Reload vim config on edit
+autocmd! bufwritepost ~/.config/nvim/init.vim source ~/.config/nvim/init.vim
+
 " Make Cmdline auto-complete great again
 set wildmode=longest,list
 
@@ -325,27 +328,31 @@ endif
 
 " Function generating text for current mode
 function! UnifiedGetMode() abort
-    return {
-        \ 'n'      : 'NORMAL',
-        \ 'v'      : 'VISUAL',
-        \ 'V'      : 'V LINE',
-        \ '\<C-V>' :  'V BLOCK',
-        \ 'i'      : 'INSERT',
-        \ 'R'      : 'REPLACE',
-        \ 'Rv'     : 'V-REPLACE',
-        \ 'c'      : 'CMD',
-        \ 'no'     : 'N·Operator Pending',
-        \ 's'      : 'SELECT',
-        \ 'S'      : 'S·LINE ',
-        \ '\<C-S>' : 'S·BLOK ',
-        \ 'cv'     : 'Vim Ex ',
-        \ 'ce'     : 'Ex ',
-        \ 'r'      : 'Prompt ',
-        \ 'rm'     : 'More ',
-        \ 'r?'     : 'Confirm ',
-        \ '!'      : 'Shell ',
-        \ 't'      : 'Terminal '
-        \}[mode()]
+    try 
+        return {
+            \ 'n'      : 'NORMAL',
+            \ 'v'      : 'VISUAL',
+            \ 'V'      : 'V LINE',
+            \ '\<C-V>' : 'V BLOCK',
+            \ 'i'      : 'INSERT',
+            \ 'R'      : 'REPLACE',
+            \ 'Rv'     : 'V-REPLACE',
+            \ 'c'      : 'CMD',
+            \ 'no'     : 'N·Operator Pending',
+            \ 's'      : 'SELECT',
+            \ 'S'      : 'S·LINE ',
+            \ '\<C-S>' : 'S·BLOK ',
+            \ 'cv'     : 'Vim Ex ',
+            \ 'ce'     : 'Ex ',
+            \ 'r'      : 'Prompt ',
+            \ 'rm'     : 'More ',
+            \ 'r?'     : 'Confirm ',
+            \ '!'      : 'Shell ',
+            \ 't'      : 'Terminal '
+            \}[mode()]
+    catch
+        return "Unknown Mode"
+    endtry
 endfunction
 
 " Function generating file flags
@@ -428,6 +435,7 @@ noremap Ä <C-o>
 " Visual mode
 noremap b v
 noremap B V
+noremap <C-B> <C-v>
 
 function! ToggleSpellChecking()
     let &spell=!&spell
