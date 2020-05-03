@@ -7,6 +7,8 @@
     // "rust.clippy_preference": "on",
     "rust-analyzer.procMacro.enable": true,
     "rust-analyzer.checkOnSave.command": "clippy",
+    "rust-analyzer.checkOnSave.extraArgs": ["--all"],
+    "rust-analyzer.checkOnSave.allTargets": false,
 
     "python.formatting.provider": "yapf",
 
