@@ -261,6 +261,8 @@ Plug 'chr4/nginx.vim'
 
 Plug 'ntpeters/vim-better-whitespace'
 
+Plug 'rhysd/vim-wasm'
+
 " TODO: Consider some plugins by tpope
 
 call plug#end()
@@ -412,6 +414,7 @@ noremap L R
 
 " Delete and go in insert mode
 noremap h s
+noremap H S
 
 " Insert mode
 " appending still is at "a"
