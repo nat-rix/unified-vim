@@ -2,12 +2,10 @@
     "yank.highlight.enable": true,
     "yank.highlight.duration": 400,
     "yank.enableCompletion": true,
-    
-    // rust.clippy_preference does only exist for rust-rls
-    // "rust.clippy_preference": "on",
+
     "rust-analyzer.procMacro.enable": true,
     "rust-analyzer.checkOnSave.command": "clippy",
-    "rust-analyzer.checkOnSave.extraArgs": ["--all"],
+    "rust-analyzer.checkOnSave.extraArgs": ["--all", "--tests"],
     "rust-analyzer.checkOnSave.allTargets": false,
 
     "python.formatting.provider": "yapf",
@@ -17,6 +15,7 @@
         "python",
         "html",
         "js",
+        "c",
         "css"
     ],
 
