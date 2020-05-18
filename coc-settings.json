@@ -5,7 +5,7 @@
 
     "rust-analyzer.procMacro.enable": true,
     "rust-analyzer.checkOnSave.command": "clippy",
-    "rust-analyzer.checkOnSave.extraArgs": ["--all", "--tests"],
+    "rust-analyzer.checkOnSave.extraArgs": ["--all", "--tests", "--all-targets"],
     "rust-analyzer.checkOnSave.allTargets": false,
 
     "python.formatting.provider": "yapf",
