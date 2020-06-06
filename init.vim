@@ -263,6 +263,8 @@ Plug 'ntpeters/vim-better-whitespace'
 
 Plug 'rhysd/vim-wasm'
 
+Plug 'tikhomirov/vim-glsl'
+
 " TODO: Consider some plugins by tpope
 
 call plug#end()
