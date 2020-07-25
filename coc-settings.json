@@ -9,6 +9,9 @@
     "rust-analyzer.checkOnSave.allTargets": false,
 
     "python.formatting.provider": "yapf",
+    "python.linting.pylintEnabled": false,
+    "python.linting.prospectorEnabled": true,
+    "python.linting.flake8Enabled": true,
 
     "coc.preferences.formatOnSaveFiletypes": [
         "rust",
