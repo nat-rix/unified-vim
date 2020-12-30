@@ -3,20 +3,24 @@
     "yank.highlight.duration": 400,
     "yank.enableCompletion": true,
 
-    "rust-analyzer.procMacro.enable": true,
-    "rust-analyzer.checkOnSave.command": "clippy",
-    "rust-analyzer.checkOnSave.extraArgs": ["--all", "--tests", "--all-targets"],
+    //"rust-analyzer.procMacro.enable": true,
+    //"rust-analyzer.checkOnSave.command": "clippy",
+    //"rust-analyzer.checkOnSave.extraArgs": [""],
+
     "rust-analyzer.checkOnSave.allTargets": false,
 
     "python.formatting.provider": "yapf",
-    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Args":  ["--config=/home/dennis/dill/src/setup.cfg"],
+    "python.linting.pylintArgs": ["--load-plugins=pylint_django"],
+    "python.linting.prospectorArgs": ["--load-plugins=pylint_django"],
+    "python.linting.pylintEnabled": true,
     "python.linting.prospectorEnabled": true,
     "python.linting.flake8Enabled": true,
+    "css.enable": true,
+    "css.validate": true,
 
     "coc.preferences.formatOnSaveFiletypes": [
         "rust",
-        "python",
-        "html",
         "js",
         "c",
         "css"

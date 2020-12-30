@@ -265,27 +265,41 @@ Plug 'rhysd/vim-wasm'
 
 Plug 'tikhomirov/vim-glsl'
 
+Plug 'lervag/vimtex'
+
+" Coc
+Plug 'neoclide/coc-vimtex'
+Plug 'neoclide/coc-json'
+Plug 'clangd/coc-clangd'
+Plug 'fannheyward/coc-rust-analyzer'
+Plug 'neoclide/coc-yank'
+Plug 'neoclide/coc-python'
+Plug 'fannheyward/coc-xml'
+Plug 'neoclide/coc-java'
+Plug 'neoclide/coc-html'
+Plug 'neoclide/coc-json'
+Plug 'coc-extensions/coc-omnisharp'
+Plug 'fannheyward/coc-xml'
+Plug 'neoclide/coc-yaml'
+Plug 'neoclide/coc-tsserver'
+Plug 'fannheyward/coc-markdownlint'
+Plug 'vim-scripts/dbext.vim'
+
 " TODO: Consider some plugins by tpope
 
 call plug#end()
 
-let g:coc_global_extensions=[
-    \'coc-yank',
-    \'coc-rust-analyzer',
-    \'coc-python',
-    \'coc-java',
-    \'coc-html',
-    \'coc-json',
-    \'coc-omnisharp',
-    \'coc-xml',
-    \'coc-yaml',
-    \'coc-tsserver',
-    \'coc-markdownlint',
-\]
-
 
 " Plugin Configuration
 " ====================
+
+" naru
+let g:fuzzy_executable = 'naru'
+
+
+" vimtex
+let g:tex_flavor = 'latex'
+let g:vimtex_view_general_viewer = 'zathura'
 
 " coc-yank
 " --------
@@ -477,6 +491,9 @@ noremap <Leader>se :set spelllang=en_us<CR>
 " Cycle through spell checker issues
 noremap <PageUp> [s
 noremap <PageDown> ]s
+
+" sudo save a file
+cmap W w !sudo tee > /dev/null %
 
 " Jump to the first relevant character instead
 noremap 0 ^
