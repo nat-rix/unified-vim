@@ -90,7 +90,7 @@ set t_vb=
 set tm=500
 
 " Ignore compiled files
-set wildignore=*.o,*~,*.pyc,*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,*/target/*
+set wildignore=*.o,*~,*.pyc,*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store,*/target/*,**/node_modules/**
 
 " Only be case sensitive on search if contains upper case letters
 set smartcase
@@ -263,9 +263,13 @@ Plug 'ntpeters/vim-better-whitespace'
 
 Plug 'rhysd/vim-wasm'
 
+Plug 'posva//vim-vue'
+
 Plug 'tikhomirov/vim-glsl'
 
 Plug 'lervag/vimtex'
+
+Plug 'editorconfig/editorconfig-vim'
 
 " Coc
 Plug 'neoclide/coc-vimtex'
@@ -465,8 +469,8 @@ function! ToggleSpellChecking()
     endif
 endfunction
 
-" Don't do spell checking
-set nospell
+" Do spell checking
+set spell
 
 " Spelling language english
 set spelllang=en_us
@@ -475,6 +479,8 @@ set spellsuggest=best,20
 
 " Toggle spell checking
 noremap <silent> <Leader>ss :call ToggleSpellChecking()<CR>
+
+nnoremap <F4> :<C-U>setlocal lcs=tab:>-,trail:-,eol:$ list! list? <CR>
 
 " Add do dictionary
 noremap <Leader>sa zg
@@ -493,7 +499,7 @@ noremap <PageUp> [s
 noremap <PageDown> ]s
 
 " sudo save a file
-cmap W w !sudo tee > /dev/null %
+command! -nargs=0 W :w !sudo tee > /dev/null %
 
 " Jump to the first relevant character instead
 noremap 0 ^
@@ -523,6 +529,9 @@ endfunction
 
 " Quick-Fix key
 noremap <leader>f  <Plug>(coc-fix-current)
+
+" Execute CodeAction
+noremap <silent><C-SPACE> :CocAction<CR>
 
 " Use `:Format` to format current buffer
 command! -nargs=0 Format :call CocAction('format')
