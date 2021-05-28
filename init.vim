@@ -271,6 +271,8 @@ Plug 'lervag/vimtex'
 
 Plug 'editorconfig/editorconfig-vim'
 
+Plug 'chr4/nginx.vim'
+
 " Coc
 Plug 'neoclide/coc-vimtex'
 Plug 'neoclide/coc-json'
