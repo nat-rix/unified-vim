@@ -251,7 +251,7 @@ call plug#begin('$HOME/.vim/plugged')
 
 Plug 'flazz/vim-colorschemes'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'master'}
 
 Plug 'truedoctor/bufexplorer'
 
@@ -271,23 +271,35 @@ Plug 'lervag/vimtex'
 
 Plug 'editorconfig/editorconfig-vim'
 
+Plug 'neovimhaskell/haskell-vim'
+
+Plug 'neovim/nvim-lspconfig'
+
+Plug 'simrat39/rust-tools.nvim'
+
+Plug 'kabouzeid/nvim-lspinstall', {'branch': 'main'}
+
+Plug 'hrsh7th/nvim-compe'
+
+Plug 'tzachar/compe-tabnine', {'branch': 'main',  'do': './install.sh' }
+
 " Coc
-Plug 'neoclide/coc-vimtex'
-Plug 'neoclide/coc-json'
-Plug 'clangd/coc-clangd'
-Plug 'fannheyward/coc-rust-analyzer'
-Plug 'neoclide/coc-yank'
-Plug 'neoclide/coc-python'
-Plug 'fannheyward/coc-xml'
-Plug 'neoclide/coc-java'
-Plug 'neoclide/coc-html'
-Plug 'neoclide/coc-json'
-Plug 'coc-extensions/coc-omnisharp'
-Plug 'fannheyward/coc-xml'
-Plug 'neoclide/coc-yaml'
-Plug 'neoclide/coc-tsserver'
-Plug 'fannheyward/coc-markdownlint'
-Plug 'vim-scripts/dbext.vim'
+"Plug 'neoclide/coc-vimtex'
+"Plug 'neoclide/coc-json'
+"Plug 'clangd/coc-clangd'
+"Plug 'fannheyward/coc-rust-analyzer'
+"Plug 'neoclide/coc-yank'
+"Plug 'neoclide/coc-python'
+"Plug 'fannheyward/coc-xml'
+"Plug 'neoclide/coc-java'
+"Plug 'neoclide/coc-html'
+"Plug 'neoclide/coc-json'
+"Plug 'coc-extensions/coc-omnisharp'
+"Plug 'fannheyward/coc-xml'
+"Plug 'neoclide/coc-yaml'
+"Plug 'neoclide/coc-tsserver'
+"Plug 'fannheyward/coc-markdownlint'
+"Plug 'vim-scripts/dbext.vim'
 
 " TODO: Consider some plugins by tpope
 
@@ -302,13 +314,196 @@ let g:fuzzy_executable = 'naru'
 
 
 " vimtex
-let g:tex_flavor = 'latex'
 let g:vimtex_view_general_viewer = 'zathura'
+let g:vimtex_view_method = 'zathura'
+"let g:vimtex_completion = v:false
+"let g:vimtex_complete_enabled = 0
+let g:vimtex_mappings_enabled = 0
 
 " coc-yank
 " --------
 " > see coc-settings.json
 hi HighlightedyankRegion term=bold ctermbg=4
+
+" nvim-compe
+" ----------
+let g:compe = {}
+let g:compe.enabled = v:true
+let g:compe.autocomplete = v:true
+let g:compe.debug = v:false
+let g:compe.min_length = 1
+let g:compe.preselect = 'enable'
+let g:compe.throttle_time = 80
+let g:compe.source_timeout = 200
+let g:compe.resolve_timeout = 800
+let g:compe.incomplete_delay = 400
+let g:compe.max_abbr_width = 100
+let g:compe.max_kind_width = 100
+let g:compe.max_menu_width = 100
+let g:compe.documentation = v:true
+
+let g:compe.source = {}
+let g:compe.source.path = v:true
+let g:compe.source.buffer = v:true
+let g:compe.source.calc = v:true
+let g:compe.source.nvim_lsp = v:true
+let g:compe.source.nvim_lua = v:true
+let g:compe.source.vsnip = v:true
+let g:compe.source.ultisnips = v:true
+let g:compe.source.luasnip = v:true
+let g:compe.source.emoji = v:true
+let g:compe.source.spell = v:true
+
+
+let g:compe.source.tabnine = {}
+let g:compe.source.tabnine.max_line = 1000
+let g:compe.source.tabnine.max_num_results = 6
+let g:compe.source.tabnine.priority = 5000
+"" setting sort to false means compe will leave tabnine to sort the completion items
+let g:compe.source.tabnine.sort = v:false
+let g:compe.source.tabnine.show_prediction_strength = v:true
+let g:compe.source.tabnine.ignore_pattern = ''
+
+inoremap <silent><expr> <C-Space> compe#complete()
+inoremap <silent><expr> <CR>      compe#confirm('<CR>')
+inoremap <silent><expr> <C-e>     compe#close('<C-e>')
+inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
+inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+
+lua << EOF
+-- Compe setup
+require'compe'.setup {
+  enabled = true;
+  autocomplete = true;
+  debug = false;
+  min_length = 1;
+  preselect = 'enable';
+  throttle_time = 80;
+  source_timeout = 200;
+  incomplete_delay = 400;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
+  documentation = true;
+
+  source = {
+    path = true;
+    nvim_lsp = true;
+  };
+}
+
+local t = function(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local check_back_space = function()
+    local col = vim.fn.col('.') - 1
+    if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
+        return true
+    else
+        return false
+    end
+end
+
+-- Use (s-)tab to:
+--- move to prev/next item in completion menuone
+--- jump to prev/next snippet's placeholder
+_G.tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-n>"
+  elseif check_back_space() then
+    return t "<Tab>"
+  else
+    return vim.fn['compe#complete']()
+  end
+end
+_G.s_tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-p>"
+  else
+    return t "<S-Tab>"
+  end
+end
+
+vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+EOF
+
+" vim lspconfig
+" -------------
+
+lua << EOF
+local nvim_lsp = require('lspconfig')
+
+-- Use an on_attach function to only map the following keys 
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  --Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+
+end
+
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = { "pyright", "rust_analyzer", "tsserver" }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    on_attach = on_attach,
+    flags = {
+      debounce_text_changes = 150,
+    }
+  }
+end
+
+EOF
+
+" vim lsp installer
+" -----------------
+
+lua << EOF
+local function setup_servers()
+  require'lspinstall'.setup()
+  local servers = require'lspinstall'.installed_servers()
+  for _, server in pairs(servers) do
+    require'lspconfig'[server].setup{}
+  end
+end
+
+setup_servers()
+
+-- Automatically reload after `:LspInstall <server>` so we don't have to restart neovim
+require'lspinstall'.post_install_hook = function ()
+  setup_servers() -- reload installed servers
+  vim.cmd("bufdo e") -- this triggers the FileType autocmd that starts the server
+end
+EOF
 
 " bufexplorer
 " -----------
@@ -390,25 +585,26 @@ function! UnifiedGenModsl() abort
 endfunction
 
 " Function generating status line
-function! UnifiedGensl() abort
-    let l:coc_status = coc#status() . get(b:,'coc_current_function','')
-    if empty(l:coc_status)
-    else
-        let l:coc_status = '%#CocListFgMagenta#( ' . l:coc_status . ' )%#UniStatusBg#'
-    endif
-    let l:modestr = '%#UniStatusModestr# %{UnifiedGetMode()}%#UniStatusBg#'
-    let l:filepath = ' │ %#UniStatusFile#%t%#UniStatusBg#'
-    let l:filepath .= '%{UnifiedGenModsl()}'
-    let l:linecol = '%#ModeMsg#| c%c L%l/%L%#UniStatusBg#'
-    let l:fileenc = '%#UniStatusEnc#%{&fileencoding}%#UniStatusBg#'
-    let l:left = l:modestr . l:filepath
-    let l:right = l:fileenc . '  ' . l:linecol . l:coc_status
-    let l:ret = l:left . '%#UniStatusBg#%=' . l:right
-    return l:ret
-endfunction
+"function! UnifiedGensl() abort
+"    let l:coc_status = coc#status() . get(b:,'coc_current_function','')
+"    if empty(l:coc_status)
+"    else
+"        let l:coc_status = '%#CocListFgMagenta#( ' . l:coc_status . ' )%#UniStatusBg#'
+"    endif
+"    let l:modestr = '%#UniStatusModestr# %{UnifiedGetMode()}%#UniStatusBg#'
+"    let l:filepath = ' │ %#UniStatusFile#%t%#UniStatusBg#'
+"    let l:filepath .= '%{UnifiedGenModsl()}'
+"    let l:linecol = '%#ModeMsg#| c%c L%l/%L%#UniStatusBg#'
+"    let l:fileenc = '%#UniStatusEnc#%{&fileencoding}%#UniStatusBg#'
+"    let l:left = l:modestr . l:filepath
+"    let l:right = l:fileenc . '  ' . l:linecol . l:coc_status
+"    let l:ret = l:left . '%#UniStatusBg#%=' . l:right
+"    return l:ret
+"endfunction
 
 " Set status line generator
-set statusline=%!UnifiedGensl()
+"set statusline=%!UnifiedGensl()
+
 
 
 " Key bindings
