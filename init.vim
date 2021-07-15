@@ -238,10 +238,10 @@ noremap \il o<ESC>oimpl  {<CR>}<ESC><UP>$<LEFT>i
 "        see `:h expression`
 
 " Use Ctrl+c and Ctrl+v for copy/paste from system clipboard
-noremap <C-v> "+p
-noremap <C-c> "+y
+"noremap <C-v> "+p
+"noremap <C-c> "+y
 " Also paste in insert mode
-inoremap <C-v> <ESC>"+pa
+"inoremap <C-v> <ESC>"+pa
 
 
 " Plugins
@@ -418,49 +418,49 @@ set statusline=%!UnifiedGensl()
 
 " Simple single character movement up and down.
 " For left and right cursor movement better use neo's LIAE-direction-keys
-noremap s h
-noremap n j
-noremap r k
-noremap t l
-
-" Word movement
-" Intuitive, because similar to neo's LIAE-keys
-noremap i b
-noremap I B
-noremap e e
-noremap E E
-
-" Replace key
-noremap l r
-noremap L R
-
-" Delete and go in insert mode
-noremap h s
-noremap H S
-
-" Insert mode
-" appending still is at "a"
-noremap u i
-noremap U I
-
-" Undo
-noremap v u
-noremap V <C-r>
-
-" Search
-noremap j n
-noremap J N
-
-" Jump back and forward in jump list
-noremap ä <C-i>
-noremap Ä <C-o>
-
-" TODO: ö and ü are not taken yet, come up with an assignment
-
-" Visual mode
-noremap b v
-noremap B V
-noremap <C-B> <C-v>
+"noremap s h
+"noremap n j
+"noremap r k
+"noremap t l
+"
+"" Word movement
+"" Intuitive, because similar to neo's LIAE-keys
+"noremap i b
+"noremap I B
+"noremap e e
+"noremap E E
+"
+"" Replace key
+"noremap l r
+"noremap L R
+"
+"" Delete and go in insert mode
+"noremap h s
+"noremap H S
+"
+"" Insert mode
+"" appending still is at "a"
+"noremap u i
+"noremap U I
+"
+"" Undo
+"noremap v u
+noremap U <C-r>
+"
+"" Search
+"noremap j n
+"noremap J N
+"
+"" Jump back and forward in jump list
+"noremap ä <C-i>
+"noremap Ä <C-o>
+"
+"" TODO: ö and ü are not taken yet, come up with an assignment
+"
+"" Visual mode
+"noremap b v
+"noremap B V
+"noremap <C-B> <C-v>
 
 function! ToggleSpellChecking()
     let &spell=!&spell
@@ -477,7 +477,7 @@ set spell
 " Spelling language english
 set spelllang=en_us
 
-set spellsuggest=best,20
+set spellsuggest=best,8
 
 " Toggle spell checking
 noremap <silent> <Leader>ss :call ToggleSpellChecking()<CR>
@@ -513,7 +513,7 @@ inoremap <M-n> <ESC>mz:m+<cr>`za
 inoremap <M-r> <ESC>mz:m-2<cr>`za
 
 " When you press L you can search and replace the selected text
-vnoremap <silent> L :call VisualSelection()<CR>
+vnoremap <silent> R :call VisualSelection()<CR>
 
 function! VisualSelection() range
     let l:saved_reg = @"
@@ -542,20 +542,20 @@ command! -nargs=0 Format :call CocAction('format')
 " TODO: some other vim buffer shit
 
 " Cycle through buffers
-noremap <M-S-n> :bp<CR>
-noremap <M-S-r> :bn<CR>
-inoremap <M-S-n> <ESC>:bp<CR>
-inoremap <M-S-r> <ESC>:bn<CR>
+noremap <M-S-j> :bp<CR>
+noremap <M-S-k> :bn<CR>
+inoremap <M-S-j> <ESC>:bp<CR>
+inoremap <M-S-k> <ESC>:bn<CR>
 
 " Movement between windows
-noremap <C-r> <C-W><UP>
-noremap <C-n> <C-W><DOWN>
-noremap <C-s> <C-W><LEFT>
-noremap <C-t> <C-W><RIGHT>
-inoremap <C-r> <ESC><C-W><UP>
-inoremap <C-n> <ESC><C-W><DOWN>
-inoremap <C-s> <ESC><C-W><LEFT>
-inoremap <C-t> <ESC><C-W><RIGHT>
+noremap <C-k> <C-W><UP>
+noremap <C-j> <C-W><DOWN>
+noremap <C-h> <C-W><LEFT>
+noremap <C-l> <C-W><RIGHT>
+inoremap <C-k> <ESC><C-W><UP>
+inoremap <C-j> <ESC><C-W><DOWN>
+inoremap <C-h> <ESC><C-W><LEFT>
+inoremap <C-l> <ESC><C-W><RIGHT>
 noremap <C-UP> <C-W><UP>
 noremap <C-DOWN> <C-W><DOWN>
 noremap <C-LEFT> <C-W><LEFT>
